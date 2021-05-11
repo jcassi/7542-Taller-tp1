@@ -2,7 +2,7 @@
 #include <math.h>
 
 void hill_encryptor_init(hill_encryptor_t *self, const char key[]) {
-	size_t length/*length = 4;*/ = strlen(key);
+	size_t length = strlen(key);
 	int mapped_key[length];
 
 	matrix_init(&self->key, (size_t)sqrt(length), (size_t)sqrt(length));

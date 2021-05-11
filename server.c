@@ -16,16 +16,15 @@ void server_uninit(server_t *self) {
 
 void server_iterate(server_t *self) {
 	bool socket_still_open = true;
-	char length_buffer[3], line_buffer[MAX_SIZE];
+	char length_buffer[2], line_buffer[MAX_SIZE];
 	ssize_t s = 1;
 
 	while (socket_still_open) {
-		memset(length_buffer, 0, 3);
+		memset(length_buffer, 0, 2);
 		s = socket_receive(&(self->peer), length_buffer, 2);
 		if (s == 0) {
 			socket_still_open = false;
 		} else {
-			length_buffer[2] = '\n';
 			int size = length_buffer[0]*256 + length_buffer[1];
 			memset(line_buffer, 0, MAX_SIZE);
 			s = socket_receive(&(self->peer), line_buffer, size);
