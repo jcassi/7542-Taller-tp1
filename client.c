@@ -4,14 +4,18 @@ void client_init(client_t *self, const char *file_name) {
 	socket_init(&self->skt);
 	if (strlen(file_name) == 1 && file_name[0] == '-') {
 		self->fp = stdin;
+		self->is_stdin = true;
 	} else {
 		self->fp = fopen(file_name, "rt");
+		self->is_stdin = false;
 	}
 }
 
 void client_uninit(client_t *self) {
 	socket_uninit(&self->skt);
-	fclose(self->fp);
+	if (!self->is_stdin) {
+		fclose(self->fp);
+	}
 }
 
 void client_iterate(client_t *self) {
