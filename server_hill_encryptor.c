@@ -16,8 +16,8 @@ void hill_encryptor_uninit(hill_encryptor_t *self) {
 
 size_t hill_encryptor_encrypt(hill_encryptor_t *self, char str[], size_t length, char result[]) {
 	matrix_t matrix, mat_result;
-	char trimmed[length];
-	int mapped_text[length];
+	char *trimmed = (char*)malloc(length * sizeof(char));//[length];
+	int *mapped_text = (int*)malloc(length * sizeof(int));//[length];
 	size_t trimmed_length;
 
 	trimmed_length = hill_encryptor_trim(self, str, length, trimmed);
@@ -28,7 +28,7 @@ size_t hill_encryptor_encrypt(hill_encryptor_t *self, char str[], size_t length,
 	matrix_multiply(&self->key, &matrix, &mat_result);
 	matrix_mod(&mat_result, 26);
 
-	int encrypted[mat_result.rows * mat_result.cols];
+	int *encrypted = (int*)malloc(mat_result.rows * mat_result.cols * sizeof(int));//[mat_result.rows * mat_result.cols];
 	matrix_to_array_by_columns(&mat_result, encrypted);
 	hill_encryptor_map_to_letters(self, encrypted, mat_result.rows * mat_result.cols, result);
 	matrix_uninit(&matrix);
