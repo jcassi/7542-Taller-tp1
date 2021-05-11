@@ -1,5 +1,5 @@
-#ifndef SOCKET_H
-#define SOCKET_H
+#ifndef COMMON_SOCKET_H
+#define COMMON_SOCKET_H
 
 #include <stddef.h>
 #include <stdint.h>

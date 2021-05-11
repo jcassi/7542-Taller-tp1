@@ -1,5 +1,5 @@
-#ifndef MATRIX_H_
-#define MATRIX_H_
+#ifndef SERVER_MATRIX_H_
+#define SERVER_MATRIX_H_
 
 #include <stdio.h>
 #include <stdlib.h>

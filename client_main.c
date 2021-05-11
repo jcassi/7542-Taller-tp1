@@ -5,7 +5,8 @@ int main(int argc, char const *argv[]) {
 
 	//validar argvs
 	client_init(&client, argv[3]);
-	client_iterate(&client, argv[1],  argv[2]);
+	client_connect(&client, argv[1], argv[2]);
+	client_iterate(&client);
 	client_uninit(&client);
 	return 0;
 }

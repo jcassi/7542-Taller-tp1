@@ -1,4 +1,4 @@
-#include "socket.h"
+#include "common_socket.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -79,7 +79,6 @@ int socket_accept(socket_t *listener, socket_t *peer) {
 int socket_connect(socket_t *self, const char *host, const char *service) {
 	struct addrinfo hints;
 	struct addrinfo *result, *rp; 
-	int status;
 	int fd, s;
 
 	memset(&hints, 0, sizeof(struct addrinfo));

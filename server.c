@@ -1,6 +1,6 @@
 #include "server.h"
 
-#define MAX_SIZE 50 //cambiar a mem. din. malloc con length_buffer
+#define MAX_SIZE 20 //cambiar a mem. din. malloc con length_buffer
 
 
 void server_init(server_t *self, const char *service, const char *key) {
@@ -24,17 +24,20 @@ void server_iterate(server_t *self) {
 		s = socket_receive(&(self->peer), length_buffer, 2);
 		if (s == 0) {
 			socket_still_open = false;
+		} else {
+			length_buffer[2] = '\n';
+			int size = length_buffer[0]*256 + length_buffer[1];
+			memset(line_buffer, 0, MAX_SIZE);
+			s = socket_receive(&(self->peer), line_buffer, size);
+			if (s == 0) {
+				socket_still_open = false;
+			}
+			char encrypted_line[size + 10];
+			size = hill_encryptor_encrypt(&self->encryptor, line_buffer, s, encrypted_line);
+			length_buffer[0] = size / 256;
+			length_buffer[1] = size % 256;
+			socket_send(&self->peer, length_buffer, 2);
+			size = socket_send(&self->peer, encrypted_line, size);
 		}
-		length_buffer[2] = '\n';
-
-		int size = length_buffer[1]; //[0] y [1]
-		memset(line_buffer, 0, MAX_SIZE);
-		s = socket_receive(&(self->peer), line_buffer, size);
-		if (s == 0) {
-			socket_still_open = false;
-		}
-		char encrypted_line[size + 3]
-		size = hill_encryptor_encrypt(&encryptor, line_buffer, length, encrypted_line);
-		socket_send(&self->peer, encrypted_line, size);
 	}
 }

@@ -1,13 +1,14 @@
-#include "socket.h"
+#include "common_socket.h"
 #include "server.h"
 
 
-
-int int main(int argc, char const *argv[])
+int main(int argc, char const *argv[])
 {
 	//validar argvs
-	server_init(&serv, argv[1], argv[2]);
-	server_iterate(&serv);
-	server_uninit(&serv);
+	server_t server;
+
+	server_init(&server, argv[1], argv[2]);
+	server_iterate(&server);
+	server_uninit(&server);
 	return 0;
 }

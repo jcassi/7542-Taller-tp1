@@ -1,8 +1,8 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
-#include "server.h"
-#include "socket.h"
+#include "common_socket.h"
+#include "server_hill_encryptor.h"
 #include <stdio.h>
 #include <string.h>
 

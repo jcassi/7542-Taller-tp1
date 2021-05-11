@@ -17,9 +17,8 @@ void client_uninit(client_t *self) {
 void client_iterate(client_t *self) {
 	char *buffer = NULL;
 	char line_length[2]; 
-	size_t length = 1;
+	size_t length = 0;
 	ssize_t chars_read = 1;
-
 
 	while(chars_read > 0) {
 		buffer = (char *)malloc(length * sizeof(char));
@@ -28,14 +27,15 @@ void client_iterate(client_t *self) {
 			free(buffer);
 			break;
 		}
-		line_length[0] = '0';//cambiar
-		line_length[1] = chars_read; //cambiar
+		line_length[0] = chars_read / 256;
+		line_length[1] = chars_read % 256;
 		socket_send(&self->skt, line_length, 2);
 		socket_send(&self->skt, buffer, chars_read);
-		socket_receive(&self->skt, buffer,  chars_read);
-		//imprimir por stdout
+
+		socket_receive(&self->skt, line_length, 2);
+		chars_read = socket_receive(&self->skt, buffer, line_length[0]*256+line_length[1]);
+		fprintf(stdout, "%.*s\n", (int)chars_read, buffer);
 		free(buffer);
-		
 	}
 }
 

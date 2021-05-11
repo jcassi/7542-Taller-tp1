@@ -1,9 +1,9 @@
 #ifndef CLIENT_H_
 #define CLIENT_H_
 
-#include "client.h"
-#include "socket.h"
+#include "common_socket.h"
 #include <stdio.h>
+#include <string.h>
 
 typedef struct client {
 	socket_t skt;

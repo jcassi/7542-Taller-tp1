@@ -1,4 +1,4 @@
-#include "matrix.h"
+#include "server_matrix.h"
 
 int matrix_init(matrix_t *self, size_t rows, size_t cols) {
 	if ((self->elements = (int **)malloc(rows * sizeof(int*))) == NULL) {
@@ -11,6 +11,7 @@ int matrix_init(matrix_t *self, size_t rows, size_t cols) {
 	}
 	self->rows = rows;
 	self->cols = cols;
+	return 0;
 }
 void matrix_uninit(matrix_t *self) {
 	for (size_t i = 0; i < self->rows; i++) {
@@ -35,6 +36,7 @@ int matrix_set_element(matrix_t *self, size_t row, size_t col, int elem) {
 		return -1;
 	}
 	self->elements[row][col] = elem;
+	return 0;
 }
 
 int matrix_get_element(matrix_t *self, size_t row, size_t col) {
