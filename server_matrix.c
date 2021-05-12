@@ -31,18 +31,6 @@ void matrix_multiply(matrix_t *self, matrix_t *mat, matrix_t *result) {
 	}
 }
 
-int matrix_set_element(matrix_t *self, size_t row, size_t col, int elem) {
-	if (row >= self->rows || col >= self->cols) {
-		return -1;
-	}
-	self->elements[row][col] = elem;
-	return 0;
-}
-
-int matrix_get_element(matrix_t *self, size_t row, size_t col) {
-	return self->elements[row][col];
-}
-
 void matrix_mod(matrix_t *self, size_t mod) {
 	for (int i = 0; i < self->rows; i++) {
 		for (int j = 0; j < self->cols; j++) {
@@ -83,3 +71,6 @@ void matrix_to_array_by_columns(matrix_t *self, int mapped_text[]) {
 	}
 }
 
+size_t matrix_get_order(matrix_t *self) {
+	return self->rows * self->cols;
+}

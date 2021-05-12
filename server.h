@@ -2,7 +2,7 @@
 #define SERVER_H_
 
 #include "common_socket.h"
-#include "server_hill_encryptor.h"
+#include "server_encryptor.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -10,7 +10,7 @@
 typedef struct server {
 	socket_t listener;
 	socket_t peer;
-	hill_encryptor_t encryptor;
+	encryptor_t encryptor;
 }server_t;
 
 

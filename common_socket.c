@@ -17,7 +17,8 @@ void socket_init(socket_t *self) {
 	self->fd = -1;
 }
 void socket_uninit(socket_t *self) {
-
+  shutdown(self->fd, SHUT_RDWR);
+  close(self->fd);
 }
 
 int socket_bind_and_listen(socket_t *self,
@@ -114,16 +115,14 @@ int socket_connect(socket_t *self, const char *host, const char *service) {
 
 ssize_t socket_send(socket_t *self, const char *buffer, size_t length) {
 	int bytes_sent = 0;
-	bool skt_still_open = true;
-	int s;
 
- 	while ((length > bytes_sent) && skt_still_open) {
- 		s = send(self->fd, &buffer[bytes_sent], length - bytes_sent, MSG_NOSIGNAL);
+ 	while (length > bytes_sent) {
+ 		int s;
+    s = send(self->fd, &buffer[bytes_sent], length - bytes_sent, MSG_NOSIGNAL);
  		if (s == -1) { 
- 			skt_still_open = false;
  			return -1;
- 		} else if (s == 0) { 
- 			skt_still_open = false;
+ 		} else if (s == 0) {
+      break; 
  		} else {
  			bytes_sent += s;
  		}
@@ -134,19 +133,16 @@ ssize_t socket_send(socket_t *self, const char *buffer, size_t length) {
 
 
 ssize_t socket_receive(socket_t *self, char *buffer, size_t length) {
-	int bytes_recv = 0, s;
-	bool skt_still_open = true;
+	int bytes_recv = 0;
 
-	while ((length > bytes_recv) && skt_still_open) {
+	while (length > bytes_recv) {
+    int s;
 		s = recv(self->fd, &buffer[bytes_recv], length - bytes_recv, 0);
 		if (s == -1) { 
-			skt_still_open = false;
 			return -1;
-		}
-		else if (s == 0) { 
-			skt_still_open = false;
-		}
-		else {
+		} else if (s == 0) { 
+			break;
+		}	else {
 			bytes_recv += s;
 		}
 	}

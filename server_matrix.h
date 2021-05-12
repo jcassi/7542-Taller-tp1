@@ -16,9 +16,7 @@ void matrix_mod(matrix_t *self, size_t mod);
 void matrix_fill_by_rows(matrix_t *self, int *array, size_t length);
 void matrix_fill_by_cols(matrix_t *self, int *array, size_t length);
 void matrix_to_array_by_columns(matrix_t *self, int mapped_text[]);
-int matrix_set_element(matrix_t *self, size_t row, size_t col, int elem);
-int matrix_get_element(matrix_t *self, size_t row, size_t col);
-
+size_t matrix_get_order(matrix_t *self);
 
 
 #endif

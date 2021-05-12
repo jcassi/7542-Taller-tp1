@@ -37,7 +37,8 @@ void client_iterate(client_t *self) {
 		socket_send(&self->skt, buffer, chars_read);
 
 		socket_receive(&self->skt, line_length, 2);
-		chars_read = socket_receive(&self->skt, buffer, line_length[0]*256+line_length[1]);
+		size_t received_length = line_length[0]*256+line_length[1];
+		chars_read = socket_receive(&self->skt, buffer, received_length);
 		fprintf(stdout, "%.*s\n", (int)chars_read, buffer);
 		free(buffer);
 	}
