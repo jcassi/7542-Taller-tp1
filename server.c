@@ -29,7 +29,7 @@ void server_iterate(server_t *self) {
 			if (s == 0) {
 				socket_still_open = false;
 			}
-			char *encrypted_line = (char*)malloc((size + 10) * sizeof(char));//[size + 10];
+			char *encrypted_line = (char*)malloc((size + 10) * sizeof(char));
 			size = encryptor_encode(&self->encryptor,line_buffer,s,encrypted_line);
 			length_buffer[0] = size / 256;
 			length_buffer[1] = size % 256;
