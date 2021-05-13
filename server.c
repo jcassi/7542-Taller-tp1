@@ -19,7 +19,7 @@ void server_iterate(server_t *self) {
 		ssize_t s;
 
 		memset(length_buffer, 0, 2);
-		s = socket_receive(&(self->peer), length_buffer, 2);
+		s = socket_receive(&self->peer, length_buffer, 2);
 		if (s == 0) {
 			socket_still_open = false;
 		} else {
@@ -36,6 +36,7 @@ void server_iterate(server_t *self) {
 			socket_send(&self->peer, length_buffer, 2);
 			size = socket_send(&self->peer, encrypted_line, size);
 			free(line_buffer);
+			free(encrypted_line);
 		}
 	}
 }

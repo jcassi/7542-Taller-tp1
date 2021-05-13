@@ -8,6 +8,8 @@ void encryptor_init(encryptor_t *self, const char *key) {
 	matrix_init(&self->key, (size_t)sqrt(length), (size_t)sqrt(length));
 	encryptor_map(self, key, length, mapped_key);
 	matrix_fill_by_rows(&self->key, mapped_key, length);
+
+	free(mapped_key);
 }
 
 void encryptor_uninit(encryptor_t *self) {
@@ -37,8 +39,12 @@ size_t encryptor_encode(encryptor_t *self,char *str,size_t len,char *result) {
 	int *encrypted = (int*)malloc(matrix_get_order(&mat_result) * sizeof(int));
 	matrix_to_array_by_columns(&mat_result, encrypted);
 	encryptor_unmap(self, encrypted, matrix_get_order(&mat_result), result);
+
 	matrix_uninit(&matrix);
 	matrix_uninit(&mat_result);
+	free(trimmed);
+	free(mapped_text);
+	free(encrypted);
 	return mat_result.rows * mat_result.cols;
 }
 size_t encryptor_trim(encryptor_t *self, char *str, size_t len, char *trimmed) {
