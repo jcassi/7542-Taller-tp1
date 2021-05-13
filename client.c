@@ -9,6 +9,7 @@ void client_init(client_t *self, const char *file_name) {
 		self->fp = fopen(file_name, "rt");
 		self->is_stdin = false;
 	}
+	encryptor_init(&self->encryptor);
 }
 
 void client_uninit(client_t *self) {
@@ -39,6 +40,7 @@ void client_iterate(client_t *self) {
 		size_t received_length = line_length[0] * 256 + line_length[1];
 		ssize_t chars_received;
 		chars_received = socket_receive(&self->skt, buffer, received_length);
+		encryptor_offset(&self->encryptor, buffer, chars_received);
 		fprintf(stdout, "%.*s\n", (int)chars_received, buffer);
 	}
 	free(buffer);

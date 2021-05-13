@@ -2,7 +2,7 @@
 #define SERVER_H_
 
 #include "common_socket.h"
-#include "server_encryptor.h"
+#include "common_encryptor.h"
 #include <stdio.h>
 #include <string.h>
 
