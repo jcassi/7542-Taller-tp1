@@ -25,11 +25,10 @@ void client_iterate(client_t *self) {
 	ssize_t chars_read = 1;
 
 	while(chars_read > 0) {
-		buffer = (char *)malloc(length * sizeof(char));
 		chars_read = getline(&buffer, &length, self->fp);
 		if (chars_read < 0) {
 			free(buffer);
-			break;
+			return;
 		}
 		line_length[0] = chars_read / 256;
 		line_length[1] = chars_read % 256;
@@ -37,11 +36,12 @@ void client_iterate(client_t *self) {
 		socket_send(&self->skt, buffer, chars_read);
 
 		socket_receive(&self->skt, line_length, 2);
-		size_t received_length = line_length[0]*256+line_length[1];
-		ssize_t chars_received = socket_receive(&self->skt, buffer, received_length);
+		size_t received_length = line_length[0] * 256 + line_length[1];
+		ssize_t chars_received;
+		chars_received = socket_receive(&self->skt, buffer, received_length);
 		fprintf(stdout, "%.*s\n", (int)chars_received, buffer);
-		free(buffer);
 	}
+	free(buffer);
 }
 
 void client_connect(client_t *self, const char *host, const char *service) {
