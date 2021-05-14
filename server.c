@@ -4,24 +4,22 @@ int server_init(server_t *self, const char *service, const char *key) {
 	socket_init(&self->listener);
 	encryptor_init(&self->encryptor);
 	if (encryptor_set_key(&self->encryptor, key) != 0) {
-		fprintf(stderr, "Error set key\n");
 		server_uninit(self);
 		return -1;
 	}
 	if (socket_bind_and_listen(&self->listener, "localhost", service) != 0) {
-		fprintf(stderr, "Error bind and listen\n");
 		server_uninit(self);
 		return -1;
 	}
 	if (socket_accept(&self->listener, &self->peer) != 0) {
-		fprintf(stderr, "Error accept\n");
 		server_uninit(self);
 		return -1;
 	}
 	return 0;
 }
 void server_uninit(server_t *self) {
-	socket_uninit(&(self->listener));
+	socket_uninit(&self->listener);
+	socket_uninit(&self->peer);
 	encryptor_uninit(&self->encryptor);
 }
 

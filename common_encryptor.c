@@ -10,11 +10,9 @@ int encryptor_set_key(encryptor_t *self, const char *key) {
 	int *mapped_key;
 
 	if ((mapped_key=(int*)malloc(length * sizeof(int))) == NULL) {
-		fprintf(stderr, "No memory\n");
 		return -1;
 	}
 	if (matrix_init(&self->key,(size_t)sqrt(length),(size_t)sqrt(length)) != 0) {
-		fprintf(stderr, "Error matrix init\n");
 		free(mapped_key);
 		return -1;
 	}
