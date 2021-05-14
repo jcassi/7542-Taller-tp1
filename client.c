@@ -51,7 +51,8 @@ int client_iterate(client_t *self) {
 		}
 		size_t received_length = line_length[0] * 256 + line_length[1];
 		ssize_t chars_received;
-		if ((chars_received = socket_receive(&self->skt, buffer, received_length)) != received_length) {
+		if ((chars_received = socket_receive(&self->skt, buffer,
+					received_length)) != received_length) {
 			free(buffer);
 			return -1;
 		}

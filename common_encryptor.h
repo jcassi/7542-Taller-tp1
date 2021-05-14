@@ -19,7 +19,8 @@ size_t encryptor_encode(encryptor_t *self, char *str, size_t len, int *result);
 size_t encryptor_trim(encryptor_t *self, char *str, size_t len, char *trimmed);
 void encryptor_map(encryptor_t *self, const char *str, size_t len, int *result);
 void encryptor_unmap(encryptor_t *self, int *str, size_t len, char *result);
-void encryptor_num_to_char(encryptor_t *self,int *numbers,size_t len,char *letters);
+void encryptor_num_to_char(encryptor_t *self,
+			int *numbers, size_t len, char *letters);
 void encryptor_offset(encryptor_t *self, char *buf, size_t size);
 
 #endif

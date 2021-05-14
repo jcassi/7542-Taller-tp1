@@ -59,7 +59,8 @@ size_t encryptor_encode(encryptor_t *self,char *buf,size_t len,int *encrypted) {
 	free(mapped_text);
 	return mat_result.rows * mat_result.cols;
 }
-size_t encryptor_trim(encryptor_t *self, char *buf, size_t len, char *trimmed) {
+size_t encryptor_trim(encryptor_t *self, char *buf,
+			size_t len, char *trimmed) {
  	size_t i, skipped;
  	for (i = 0, skipped = 0; i < len; i++) {
  		if (buf[i] >= 'A' && buf[i] <= 'Z') {
@@ -71,7 +72,8 @@ size_t encryptor_trim(encryptor_t *self, char *buf, size_t len, char *trimmed) {
  	return i - skipped;
 }
 
-void encryptor_map(encryptor_t *self, const char *buf, size_t len, int *result) {
+void encryptor_map(encryptor_t *self, const char *buf,
+			size_t len, int *result) {
 	for (size_t i = 0; i < len; i++) {
 		result[i] = buf[i] - 'A';
 	}
@@ -83,7 +85,8 @@ void encryptor_unmap(encryptor_t *self, int *buf, size_t len, char *result) {
 	}
 }
 
-void encryptor_num_to_char(encryptor_t *self,int *numbers,size_t len,char *letters) { 
+void encryptor_num_to_char(encryptor_t *self,
+			int *numbers, size_t len, char *letters) { 
 	for (size_t i = 0; i < len; i++) {
 		letters[i] = numbers[i];
 	}
