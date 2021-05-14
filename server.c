@@ -1,18 +1,31 @@
 #include "server.h"
 
-void server_init(server_t *self, const char *service, const char *key) {
+int server_init(server_t *self, const char *service, const char *key) {
 	socket_init(&self->listener);
 	encryptor_init(&self->encryptor);
-	encryptor_set_key(&self->encryptor, key);
-	socket_bind_and_listen(&self->listener, "localhost", service);
-	socket_accept(&self->listener, &(self->peer));
+	if (encryptor_set_key(&self->encryptor, key) != 0) {
+		fprintf(stderr, "Error set key\n");
+		server_uninit(self);
+		return -1;
+	}
+	if (socket_bind_and_listen(&self->listener, "localhost", service) != 0) {
+		fprintf(stderr, "Error bind and listen\n");
+		server_uninit(self);
+		return -1;
+	}
+	if (socket_accept(&self->listener, &self->peer) != 0) {
+		fprintf(stderr, "Error accept\n");
+		server_uninit(self);
+		return -1;
+	}
+	return 0;
 }
 void server_uninit(server_t *self) {
 	socket_uninit(&(self->listener));
 	encryptor_uninit(&self->encryptor);
 }
 
-void server_iterate(server_t *self) {
+int server_iterate(server_t *self) {
 	bool socket_still_open = true;
 	char length_buffer[2], *line_buffer;
 
@@ -44,4 +57,5 @@ void server_iterate(server_t *self) {
 			free(encrypted_as_chars);
 		}
 	}
+	return 0;
 }

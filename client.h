@@ -14,9 +14,9 @@ typedef struct client {
 	encryptor_t encryptor;
 }client_t;
 
-void client_init(client_t *self, const char *file_name);
+int client_init(client_t *self, const char *file_name);
 void client_uninit(client_t *self);
-void client_iterate(client_t *self);
-void client_connect(client_t *self, const char *host, const char *service);
+int client_iterate(client_t *self);
+int client_connect(client_t *self, const char *host, const char *service);
 
 #endif

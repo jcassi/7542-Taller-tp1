@@ -5,15 +5,24 @@ void encryptor_init(encryptor_t *self) {
 	self->is_key_set = false;
 }
 
-void encryptor_set_key(encryptor_t *self, const char *key) {
+int encryptor_set_key(encryptor_t *self, const char *key) {
 	size_t length = strlen(key);
-	int *mapped_key = (int*)malloc(length * sizeof(int));
+	int *mapped_key;
 
-	matrix_init(&self->key, (size_t)sqrt(length), (size_t)sqrt(length));
+	if ((mapped_key=(int*)malloc(length * sizeof(int))) == NULL) {
+		fprintf(stderr, "No memory\n");
+		return -1;
+	}
+	if (matrix_init(&self->key,(size_t)sqrt(length),(size_t)sqrt(length)) != 0) {
+		fprintf(stderr, "Error matrix init\n");
+		free(mapped_key);
+		return -1;
+	}
 	encryptor_map(self, key, length, mapped_key);
 	matrix_fill_by_rows(&self->key, mapped_key, length);
 	self->is_key_set = true;
 	free(mapped_key);
+	return 0;
 }
 
 void encryptor_uninit(encryptor_t *self) {

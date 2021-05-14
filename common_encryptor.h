@@ -13,7 +13,7 @@ typedef struct {
 } encryptor_t;
 
 void encryptor_init(encryptor_t *self);
-void encryptor_set_key(encryptor_t *self, const char *key);
+int encryptor_set_key(encryptor_t *self, const char *key);
 void encryptor_uninit(encryptor_t *self);
 size_t encryptor_encode(encryptor_t *self, char *str, size_t len, int *result);
 size_t encryptor_trim(encryptor_t *self, char *str, size_t len, char *trimmed);
