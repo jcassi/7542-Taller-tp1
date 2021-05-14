@@ -52,12 +52,12 @@ size_t encryptor_encode(encryptor_t *self,char *buf,size_t len,int *encrypted) {
 	matrix_mod(&mat_result, 26);
 
 	matrix_to_array_by_columns(&mat_result, encrypted);
-
+	size_t matrix_order = matrix_get_order(&mat_result);
 	matrix_uninit(&matrix);
 	matrix_uninit(&mat_result);
 	free(trimmed);
 	free(mapped_text);
-	return mat_result.rows * mat_result.cols;
+	return matrix_order;
 }
 size_t encryptor_trim(encryptor_t *self, char *buf,
 			size_t len, char *trimmed) {
@@ -76,12 +76,6 @@ void encryptor_map(encryptor_t *self, const char *buf,
 			size_t len, int *result) {
 	for (size_t i = 0; i < len; i++) {
 		result[i] = buf[i] - 'A';
-	}
-}
-
-void encryptor_unmap(encryptor_t *self, int *buf, size_t len, char *result) {
-	for (size_t i = 0; i < len; i++) {
-		result[i] = buf[i] + 'A';
 	}
 }
 
