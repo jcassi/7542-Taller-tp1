@@ -12,7 +12,6 @@ typedef struct server {
 	socket_t listener;
 	socket_t peer;
 	encryptor_t encryptor;
-	//protocol_t protocol;
 }server_t;
 
 
