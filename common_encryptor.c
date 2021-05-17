@@ -1,6 +1,7 @@
 #include "common_encryptor.h"
 #include <math.h>
 
+
 void encryptor_init(encryptor_t *self) {
 	self->is_key_set = false;
 }
@@ -30,33 +31,22 @@ void encryptor_uninit(encryptor_t *self) {
 }
 
 size_t encryptor_encode(encryptor_t *self,char *buf,size_t len,int *encrypted) {
-	matrix_t matrix, mat_result;
 	char *trimmed = (char*)malloc(len * sizeof(char));
 	int *mapped_text = (int*)malloc(len * sizeof(int));
-	size_t trimmed_len, cols;
+	size_t trimmed_len, encrypted_len;
 
 	trimmed_len = encryptor_trim(self, buf, len, trimmed);
 	encryptor_map(self, trimmed, trimmed_len, mapped_text);
-	if (trimmed_len % self->key.cols == 0) {
-		cols = trimmed_len / self->key.cols;
-	} else {
-		cols = trimmed_len / self->key.cols + 1;
-	}
+	encrypted_len = encryptor_get_line_len(self, trimmed_len, self->key.cols);
+	encryptor_fill(mapped_text, trimmed_len, encrypted_len);
+	encryptor_multiply(self, mapped_text, encrypted, encrypted_len);
+	encryptor_mod(self, encrypted, encrypted_len, 26);
 
-	matrix_init(&matrix, self->key.cols, cols);
-	matrix_init(&mat_result, self->key.cols, cols);
-	matrix_fill_by_cols(&matrix, mapped_text, trimmed_len);
-	matrix_multiply(&self->key, &matrix, &mat_result);
-	matrix_mod(&mat_result, 26);
-
-	matrix_to_array_by_columns(&mat_result, encrypted);
-	size_t matrix_order = matrix_get_order(&mat_result);
-	matrix_uninit(&matrix);
-	matrix_uninit(&mat_result);
 	free(trimmed);
 	free(mapped_text);
-	return matrix_order;
+	return encrypted_len;
 }
+
 size_t encryptor_trim(encryptor_t *self, char *buf,
 			size_t len, char *trimmed) {
  	size_t i, skipped;
@@ -89,3 +79,32 @@ void encryptor_offset(encryptor_t *self, char *buf, size_t size) {
 		buf[i] += 'A';
 	}
 }
+
+void encryptor_fill(int *mapped_text, size_t len, size_t encrypted_len) {
+	if (len != encrypted_len) {
+		for (size_t i = len; i < encrypted_len; i++) {
+			mapped_text[i] = 0;
+		}
+	}
+}
+
+void encryptor_mod(encryptor_t *self, int *encrypted, size_t size, int mod) {
+	for (int i = 0; i < size; ++i) {
+		encrypted[i] %= mod;
+	}
+}
+
+size_t encryptor_get_line_len(encryptor_t *self, size_t trimmed_len, size_t key_cols) {
+	if (trimmed_len % key_cols == 0) {
+		return key_cols * (trimmed_len / key_cols);
+	} else {
+		return key_cols * (trimmed_len / key_cols + 1);
+	}
+}
+
+void encryptor_multiply(encryptor_t *self, int *mapped_text, int *encrypted, size_t len) {
+	for (int i = 0; i < len; i += self->key.cols) {
+		matrix_multiply_by_array(&self->key, mapped_text + i, encrypted + i);
+	}
+}
+

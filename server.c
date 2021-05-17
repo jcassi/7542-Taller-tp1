@@ -41,7 +41,7 @@ int server_iterate(server_t *self) {
 			if (s == 0) {
 				socket_still_open = false;
 			}
-			int *encrypted_line = (int*)malloc((size + 10) * sizeof(int));
+			int *encrypted_line = (int*)malloc((size + 3) * sizeof(int));
 			size = encryptor_encode(&self->encryptor,line_buffer,
 						s, encrypted_line);
 			char *encrypted_as_chars = (char*)malloc(size * sizeof(char));
