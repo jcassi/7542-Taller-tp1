@@ -26,6 +26,7 @@ void client_uninit(client_t *self) {
 
 int client_iterate(client_t *self) {
 	char *buffer = NULL;
+	char *buffer_receive = NULL;
 	size_t length = 0, chars_received;
 	ssize_t chars_read = 1;
 
@@ -39,12 +40,13 @@ int client_iterate(client_t *self) {
 			free(buffer);
 			return -1;
 		}
-		if (protocol_receive_line(&self->protocol, buffer, &chars_received) != 0) {
+		if (protocol_receive_line(&self->protocol, &buffer_receive, &chars_received) != 0) {
 			free(buffer);
 			return -1;
 		}
-		encryptor_offset(&self->encryptor, buffer, chars_received);
-		fprintf(stdout, "%.*s\n", (int)chars_received, buffer);
+		encryptor_offset(&self->encryptor, buffer_receive, chars_received);
+		fprintf(stdout, "%.*s\n", (int)chars_received, buffer_receive);
+		free(buffer_receive);
 	}
 	free(buffer);
 	return 0;

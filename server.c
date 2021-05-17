@@ -25,37 +25,35 @@ void server_uninit(server_t *self) {
 
 int server_iterate(server_t *self) {
 	bool socket_still_open = true;
-	char length_buffer[2], *line_buffer;
+	char *line_buffer;
+	protocol_t protocol;
+
+	protocol_init(&protocol, &self->peer);
 
 	while (socket_still_open) {
-		ssize_t s;
-
-		memset(length_buffer, 0, 2);
-		s = socket_receive(&self->peer, length_buffer, 2);
-		if (s == 0) {
+		size_t len;
+		if (protocol_receive_line(&protocol, &line_buffer, &len) != 0) {
+			return -1;
+		}
+		if (len == 0) {
+			free(line_buffer);
 			socket_still_open = false;
 		} else {
-			int size = length_buffer[0]*256 + length_buffer[1];
-			line_buffer = (char *)malloc(size * sizeof(char)); 
-			s = socket_receive(&self->peer, line_buffer, size);
-			if (s == 0) {
-				socket_still_open = false;
-			}
-			int *encrypted_line = (int*)malloc((size + 3) * sizeof(int));
-			size = encryptor_encode(&self->encryptor,line_buffer,
-						s, encrypted_line);
-			char *encrypted_as_chars = (char*)malloc(size * sizeof(char));
+			int *encrypted_line = (int*)malloc((len + 3) * sizeof(int));
+			len = encryptor_encode(&self->encryptor, line_buffer,
+						len, encrypted_line);
+			char *encrypted_as_chars = (char*)malloc(len * sizeof(char));
 			encryptor_num_to_char(&self->encryptor, encrypted_line,
-						size, encrypted_as_chars);
-			length_buffer[0] = size / 256;
-			length_buffer[1] = size % 256;
-			socket_send(&self->peer, length_buffer, 2);
-			size = socket_send(&self->peer, encrypted_as_chars, size);
-
+						len, encrypted_as_chars);
+			if (protocol_send_line(&protocol, encrypted_as_chars, len) != 0) {
+				return -1;
+			}
 			free(line_buffer);
 			free(encrypted_line);
 			free(encrypted_as_chars);
 		}
 	}
+
+	protocol_uninit(&protocol);
 	return 0;
 }

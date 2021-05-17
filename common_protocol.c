@@ -5,6 +5,7 @@ void protocol_init(protocol_t *self, socket_t *skt) {
 }
 
 void protocol_uninit(protocol_t *self){
+	self->skt = NULL;
 }
 
 int protocol_send_line_length(protocol_t *self, size_t len) {
@@ -30,12 +31,14 @@ int protocol_send_line(protocol_t *self, char *buffer, size_t len) {
 	return 0;
 }
 
-int protocol_receive_line(protocol_t *self, char *buffer, size_t *len) {
+int protocol_receive_line(protocol_t *self, char **buffer, size_t *len) {
 	if (protocol_receive_line_length(self, len) != 0) {
 		return -1;
 	}
-	size_t chars_received;
-	if ((chars_received = socket_receive(self->skt, buffer, *len)) != *len) {
+	*buffer = (char*)malloc(*len * sizeof(char));
+	size_t chars_received = socket_receive(self->skt, *buffer, *len);
+	if (chars_received != *len) {
+		free(buffer);
 		return -1;
 	}
 	return 0;

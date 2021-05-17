@@ -1,4 +1,5 @@
 #include "common_encryptor.h"
+#include "common_protocol.h"
 #include <math.h>
 
 
