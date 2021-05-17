@@ -2,6 +2,7 @@
 
 int server_init(server_t *self, const char *service, const char *key) {
 	socket_init(&self->listener);
+	socket_init(&self->peer);
 	encryptor_init(&self->encryptor);
 	if (encryptor_set_key(&self->encryptor, key) != 0) {
 		server_uninit(self);

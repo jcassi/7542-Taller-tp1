@@ -36,7 +36,7 @@ size_t encryptor_encode(encryptor_t *self,char *buf,size_t len,int *encrypted) {
 	int *mapped_text = (int*)malloc(len * sizeof(int));
 	size_t trimmed_len, encrypted_len;
 
-	trimmed_len = encryptor_trim(self, buf, len, trimmed);
+	trimmed_len = encryptor_filter(self, buf, len, trimmed);
 	encryptor_map(self, trimmed, trimmed_len, mapped_text);
 	encrypted_len = encryptor_get_line_len(self, trimmed_len, self->key.cols);
 	encryptor_fill(mapped_text, trimmed_len, encrypted_len);
@@ -48,7 +48,7 @@ size_t encryptor_encode(encryptor_t *self,char *buf,size_t len,int *encrypted) {
 	return encrypted_len;
 }
 
-size_t encryptor_trim(encryptor_t *self, char *buf,
+size_t encryptor_filter(encryptor_t *self, char *buf,
 			size_t len, char *trimmed) {
  	size_t i, skipped;
  	for (i = 0, skipped = 0; i < len; i++) {
