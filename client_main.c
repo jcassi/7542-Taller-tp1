@@ -18,4 +18,3 @@ int main(int argc, char const *argv[]) {
 	client_uninit(&client);
 	return 0;
 }
-

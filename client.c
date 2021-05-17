@@ -12,6 +12,7 @@ int client_init(client_t *self, const char *file_name) {
 	}
 	socket_init(&self->skt);
 	encryptor_init(&self->encryptor);
+	protocol_init(&self->protocol, &self->skt);
 	return 0;
 }
 
@@ -20,6 +21,7 @@ void client_uninit(client_t *self) {
 	if (!self->is_stdin) {
 		fclose(self->fp);
 	}
+	protocol_uninit(&self->protocol);
 }
 
 int client_iterate(client_t *self) {
@@ -33,11 +35,11 @@ int client_iterate(client_t *self) {
 			free(buffer);
 			return 0;
 		}
-		if (client_send_line(self, buffer, chars_read) != 0) {
+		if (protocol_send_line(&self->protocol, buffer, chars_read) != 0) {
 			free(buffer);
 			return -1;
 		}
-		if (client_receive_line(self, buffer, &chars_received) != 0) {
+		if (protocol_receive_line(&self->protocol, buffer, &chars_received) != 0) {
 			free(buffer);
 			return -1;
 		}
@@ -55,47 +57,3 @@ int client_connect(client_t *self, const char *host, const char *service) {
 	return 0;
 }
 
-int client_send_line_length(client_t *self, size_t len) {
-	char line_length[2];
-	line_length[0] = len / 256;
-	line_length[1] = len % 256;
-	if (socket_send(&self->skt, line_length, 2) == -1) {
-		return -1;
-	}
-	return 0;
-}
-
-int client_send_line(client_t *self, char *buffer, size_t len) {
-	if (len > 256 * 256) {
-		return -1;
-	}
-	if (client_send_line_length(self, len) != 0) {
-		return -1;
-	}
-	if (socket_send(&self->skt, buffer, len) != len) {
-		free(buffer);
-		return -1;
-	}
-	return 0;
-}
-
-int client_receive_line(client_t *self, char *buffer, size_t *len) {
-	if (client_receive_line_length(self, len) != 0) {
-		return -1;
-	}
-	size_t chars_received;
-	if ((chars_received = socket_receive(&self->skt, buffer, *len)) != *len) {
-		return -1;
-	}
-	return 0;
-}
-
-int client_receive_line_length(client_t *self, size_t *len) {
-	char line_length[2];
-
-	if (socket_receive(&self->skt, line_length, 2) == -1) {
-		return -1;
-	}
-	*len = line_length[0] * 256 + line_length[1];
-	return 0;
-}
