@@ -44,10 +44,10 @@ int server_iterate(server_t *self) {
 			}
 			int *encrypted_line = (int*)malloc((size + 3) * sizeof(int));
 			size = encryptor_encode(&self->encryptor,line_buffer,
-						s, encrypted_line);
+									s, encrypted_line);
 			char *encrypted_as_chars = (char*)malloc(size * sizeof(char));
 			encryptor_num_to_char(&self->encryptor, encrypted_line,
-						size, encrypted_as_chars);
+									size, encrypted_as_chars);
 			length_buffer[0] = size / 256;
 			length_buffer[1] = size % 256;
 			socket_send(&self->peer, length_buffer, 2);

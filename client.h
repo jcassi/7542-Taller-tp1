@@ -11,7 +11,6 @@
 typedef struct client {
 	socket_t skt;
 	FILE *fp;
-	bool is_stdin;
 	encryptor_t encryptor;
 	protocol_t protocol;
 }client_t;

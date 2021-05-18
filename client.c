@@ -3,12 +3,10 @@
 int client_init(client_t *self, const char *file_name) {
 	if (strlen(file_name) == 1 && file_name[0] == '-') {
 		self->fp = stdin;
-		self->is_stdin = true;
 	} else {
 		if ((self->fp = fopen(file_name, "rt")) == NULL) {
 			return -1;
 		}
-		self->is_stdin = false;
 	}
 	socket_init(&self->skt);
 	encryptor_init(&self->encryptor);
@@ -18,7 +16,7 @@ int client_init(client_t *self, const char *file_name) {
 
 void client_uninit(client_t *self) {
 	socket_uninit(&self->skt);
-	if (!self->is_stdin) {
+	if (self->fp != stdin) {
 		fclose(self->fp);
 	}
 	protocol_uninit(&self->protocol);
@@ -40,7 +38,8 @@ int client_iterate(client_t *self) {
 			free(buffer);
 			return -1;
 		}
-		if (protocol_receive_line(&self->protocol, &buffer_receive, &chars_received) != 0) {
+		if (protocol_receive_line(&self->protocol, &buffer_receive,
+									&chars_received) != 0) {
 			free(buffer);
 			return -1;
 		}

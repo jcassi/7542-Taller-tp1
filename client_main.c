@@ -1,9 +1,12 @@
 #include "client.h"
+#define ARGS_COUNT 4
 
 int main(int argc, char const *argv[]) {
 	client_t client;
 
-	//validar argvs
+	if (argc != ARGS_COUNT) {
+		return -1;
+	}
 	if (client_init(&client, argv[3]) != 0) {
 		return -1;
 	}

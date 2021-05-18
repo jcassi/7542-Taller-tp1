@@ -95,7 +95,8 @@ void encryptor_mod(encryptor_t *self, int *encrypted, size_t size, int mod) {
 	}
 }
 
-size_t encryptor_get_line_len(encryptor_t *self, size_t trimmed_len, size_t key_cols) {
+size_t encryptor_get_line_len(encryptor_t *self, size_t trimmed_len,
+								size_t key_cols) {
 	if (trimmed_len % key_cols == 0) {
 		return key_cols * (trimmed_len / key_cols);
 	} else {
@@ -103,7 +104,8 @@ size_t encryptor_get_line_len(encryptor_t *self, size_t trimmed_len, size_t key_
 	}
 }
 
-void encryptor_multiply(encryptor_t *self, int *mapped_text, int *encrypted, size_t len) {
+void encryptor_multiply(encryptor_t *self, int *mapped_text,
+						int *encrypted, size_t len) {
 	for (int i = 0; i < len; i += self->key.cols) {
 		matrix_multiply_by_array(&self->key, mapped_text + i, encrypted + i);
 	}

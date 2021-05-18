@@ -27,17 +27,6 @@ void matrix_uninit(matrix_t *self);
 void matrix_fill_by_rows(matrix_t *self, int *array, size_t length);
 
 /*
- *Llena por columnas la matriz con los elementos del vector array de 
- *largo length.
-*/
-void matrix_fill_by_cols(matrix_t *self, int *array, size_t length);
-
-/*
- *Devuelve el orden (rows x cols) de la matriz
-*/
-size_t matrix_get_order(matrix_t *self);
-
-/*
  *Multiplica la matriz por el vector array y almacena el resultado en 
  *result.
 */
