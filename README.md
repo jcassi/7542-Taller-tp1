@@ -2,7 +2,13 @@
 
 Trabajo práctico n.°1 - Taller de Programación I - Curso Veiga
 
+Alumno: Julián Cassi
+
+Padrón: 96978
+
 El trabajo práctico consta de dos programas: el cliente y el servidor.
+
+# Cliente
 
 En el programa cliente, este lee líneas de un archivo y se las envía al servidor, del cual las recibe encriptadas. A continuación, se encuentra el diagrama de clase del TDA Client
 
@@ -20,7 +26,9 @@ Este proceso se repite mientras queden líneas por leer del archivo. En la sigui
 
 ![](https://github.com/jcassi/7542-Taller-tp1/blob/master/client_iterate.png)
 
-El otro programa de este trabajo es el servidor, quien se encarga de recibir líneas del cliente y devolérselas encriptadas. En la siguiente figura se observa el diagrama de clase del TDA Server
+# Servidor
+
+El otro programa de este trabajo es el servidor, quien se encarga de recibir líneas del cliente y devolvérselas encriptadas. En la siguiente figura se observa el diagrama de clase del TDA Server
 
 ![](https://github.com/jcassi/7542-Taller-tp1/blob/master/Server.png)
 
@@ -33,4 +41,13 @@ En primer lugar, se inicia el servidor con el puerto deseado y la clave a usar p
 Este proceso se repite mientras el cliente siga enviando mensajes a ecriptar. Una vez que termina, se cierran los sockets y se destruye el cifrador.
 
 ![](https://github.com/jcassi/7542-Taller-tp1/blob/master/server_iterate.png)
+
+## Cifrado
+
 Para el cifrado en primer lugar se almacena la clave recibida por parámetro en una matriz. Luego, por cada línea a encriptar se realiza el siguiente proceso: primero se filtran los caracteres que no estén entre A y Z. Luego se mapea A->0, B->1, …, Z->25. Después se calcula el largo que debe tener la línea en base al largo de la clave y se rellena el mensaje con ceros, de ser necesario. Se multiplica este vector por la matriz tomando de a bloques de n bytes, siendo n la cantidad de columnas de la misma. Por último, se aplica el módulo 26 y se pasa ese vector de enteros a caracteres.
+
+## Referencias
+
+[1] https://taller-de-programacion.github.io/clases
+
+[2] https://www.dcode.fr/hill-cipher
